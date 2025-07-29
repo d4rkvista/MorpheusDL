@@ -1,0 +1,27 @@
+{
+    "MainWindow": {
+        "ThreadPoolSize": null,
+        "LogHistory": true,
+        "NumberOfHistoryRecords": 10
+    },
+    "Downloader": {
+        "download_path": "C:\\Users\\window 10\\Downloads\\MorpheusDL",
+        "EmbedSubtitles": false,
+        "WriteAutoSub": false,
+        "UseExternalDownloader": true,
+        "ExternalDownloader": "aria2c",
+        "ExternalDownloaderArgs": [
+            "-x",
+            "16",
+            "-k",
+            "1M"
+        ]
+    },
+    "Fetching": {
+        "SearchLimit": 5
+    },
+    "Themes": {
+        "Default": "background-color:",
+        "Dark": "background-color:"
+    }
+}
