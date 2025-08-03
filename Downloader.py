@@ -155,21 +155,18 @@ class RealDownload(QObject, yt_dlp.YoutubeDL):
         if os.path.exists("settings.json"):
             with open("settings.json", "r") as settings:
                 settings_dict = json.load(settings).get("Downloader")
+        
 
-                if settings_dict.get("download_path"):
-                    self.DEFAULT_DOWNLOAD_PATH = settings_dict.get("download_path")
-                else:
-                    self.DEFAULT_DOWNLOAD_PATH = Path.home() / "Downloads" / "MorpheusDL"    
-                self.DEFAULT_DOWNLOAD_PATH.mkdir(parents=True, exist_ok=True)
-
-                self.embed_subtitles = True if settings_dict.get("EmbedSubtitles") else False
-                    
-                self.auto_gen_subs = True if settings_dict.get("WriteAutoSub") else False
-               
-                if settings_dict.get("UseExternalDownloader"):
-                    self.external_downloader_enabled = True
-                    self.external_downloader = settings_dict.get("ExternalDownloader", "aria2c")
-                    self.external_downloader_args = settings_dict.get("ExternalDownloaderArgs", ["-x", "16", "-k", "1M"])
+        self.DEFAULT_DOWNLOAD_PATH = Path(settings_dict.get("download_path")) or Path.home() / "Downloads" / "MorpheusDL"
+        self.DEFAULT_DOWNLOAD_PATH.mkdir(parents=True, exist_ok=True)
+        self.embed_subtitles = True if settings_dict.get("EmbedSubtitles") else False
+            
+        self.auto_gen_subs = True if settings_dict.get("WriteAutoSub") else False
+        
+        if settings_dict.get("UseExternalDownloader"):
+            self.external_downloader_enabled = True
+            self.external_downloader = settings_dict.get("ExternalDownloader", "aria2c")
+            self.external_downloader_args = settings_dict.get("ExternalDownloaderArgs", ["-x", "16", "-k", "1M"])
 
     
 

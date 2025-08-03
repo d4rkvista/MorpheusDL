@@ -19,40 +19,6 @@ from datetime import timedelta
 from Downloader import Download, RealDownload
 from io import BytesIO
 
-class SpinningPill(QLabel):
-    def __init__(self, image_path, parent=None):
-        super().__init__(parent)
-        self._angle = 0
-        self.pixmap = QPixmap(image_path)
-        self.setPixmap(self.pixmap)
-        self.setAlignment(Qt.AlignCenter)
-        self.setScaledContents(True)
-
-        # Animation: Rotate from 0° to 360° indefinitely
-        self.anim = QPropertyAnimation(self, b"angle")
-        self.anim.setStartValue(0)
-        self.anim.setEndValue(360)
-        self.anim.setDuration(2000)  # in ms; one full spin = 2s
-        self.anim.setLoopCount(-1)   # -1 = infinite
-        self.anim.start()
-
-    def stop(self):
-        self.anim.stop()   # stop spinning deletes it so i will recreate each instance
-#self.anim.pause()   # pause spinning
-#self.anim.resume()  # resume spinning
-
-    # Property for QPropertyAnimation
-    def getAngle(self):
-        return self._angle
-
-    def setAngle(self, value):
-        self._angle = value
-        transform = QTransform().rotate(self._angle)
-        rotated = self.pixmap.transformed(transform, Qt.SmoothTransformation)
-        self.setPixmap(rotated)
-
-    angle = pyqtProperty(float, getAngle, setAngle)
-
 
 class GlitchTitle(QLabel):
     def __init__(self, parent=None):
@@ -206,28 +172,32 @@ class FetchMetadata(QObject):
             if isinstance(info, list):  # multiple results (playlist or search)
                 fetched_info = []
                 for i, video in enumerate(info, start=0):
-                    fetched_info.append({
-                        "index" : i,
-                        "ID" : video.get("id"),
-                        "Title" : video.get("title"),
-                        "Uploader" : video.get("uploader"),
-                        "Duration" : video.get("duration"),
-                        "Duration_str" : video.get("duration_str"),
-                        "Thumbnail URL" : video.get("thumbnail"),
-                        "Webpage URL" : video.get("url"),
-                        "format": video.get("format", []),
-                    })
+                    try:
+                        fetched_info.append({
+                            "index" : i,
+                            "ID" : video.get("id"),
+                            "Title" : video.get("title"),
+                            "Uploader" : video.get("uploader"),
+                            "Duration" : video.get("duration"),
+                            "Duration_str" : video.get("duration_str"),
+                            "Thumbnail URL" : video.get("thumbnail"),
+                            "Webpage URL" : video.get("url"),
+                            "format": video.get("format", []),
+                        })
+                    except: pass
             else:  # single video
-                fetched_info = {
-                    "ID" : info.get("id"),
-                    "Title" : info.get("title"),
-                    "Uploader" : info.get("uploader"),
-                    "Duration" : info.get("duration"),
-                    "Duration_str" : info.get("duration_str"),
-                    "Thumbnail URL" : info.get("thumbnail"),
-                    "Webpage URL" : info.get("url"),
-                    "format": video.get("format", []),
-                    }
+                try:
+                    fetched_info = {
+                        "ID" : info.get("id"),
+                        "Title" : info.get("title"),
+                        "Uploader" : info.get("uploader"),
+                        "Duration" : info.get("duration"),
+                        "Duration_str" : info.get("duration_str"),
+                        "Thumbnail URL" : info.get("thumbnail"),
+                        "Webpage URL" : info.get("url"),
+                        "format": video.get("format", []),
+                        }
+                except: pass
             self.signals.send_results.emit(fetched_info)
         else:
             if info:
@@ -422,32 +392,25 @@ class SettingsDialog(QDialog):
         self.starter()
         self.stylesheets()
     
-    
     def layout(self):
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
+        
+        card = QFrame()
+        card.setFrameShape(QFrame.StyledPanel)  # Base shape
+        card.setFrameShadow(QFrame.Raised)      # Optional: shadowed edge
+        
+        self.vlayout = QVBoxLayout(card)
+        self.vlayout.setSpacing(10)
+        self.vlayout.setContentsMargins(15, 15, 15, 15)
 
-        container = QFrame()
 
-        self.vlayout = QVBoxLayout()
-
-        log_history_frame = QFrame()
-        thread_pool_size_frame = QFrame()
-        history_record_number_frame = QFrame()
-        download_path_frame = QFrame()
-        embed_subs_frame = QFrame()
-        auto_gen_subs_frame = QFrame()
-        external_downloader_frame = QFrame()
-        search_limit_frame = QFrame()
-
-        log_history = QHBoxLayout(log_history_frame)
-        thread_pool_size = QHBoxLayout(thread_pool_size_frame)
-        history_record_number = QHBoxLayout(history_record_number_frame)
-        download_path = QHBoxLayout(download_path_frame)
-        embed_subs = QHBoxLayout(embed_subs_frame)
-        auto_gen_subs = QHBoxLayout(auto_gen_subs_frame)
-        external_downloader = QHBoxLayout(external_downloader_frame)
-        search_limit = QHBoxLayout(search_limit_frame)
+        log_history = QHBoxLayout()
+        thread_pool_size = QHBoxLayout()
+        history_record_number = QHBoxLayout()
+        download_path = QHBoxLayout()
+        embed_subs = QHBoxLayout()
+        auto_gen_subs = QHBoxLayout()
+        external_downloader = QHBoxLayout()
+        search_limit = QHBoxLayout()
  
         thread_pool_size_v = QVBoxLayout()
         history_record_number_v = QVBoxLayout()
@@ -494,39 +457,30 @@ class SettingsDialog(QDialog):
         external_downloader.addWidget(self.external_downloader_button)
         search_limit.addWidget(self.search_limit_combo)
 
-        self.vlayout.setSpacing(10)
-        self.vlayout.setContentsMargins(15, 15, 15, 15)
-
-        self.vlayout.addWidget(log_history_frame)
-        self.vlayout.addWidget(thread_pool_size_frame)
-        self.vlayout.addWidget(history_record_number_frame)
-        self.vlayout.addWidget(download_path_frame)
-        self.vlayout.addWidget(embed_subs_frame)
-        self.vlayout.addWidget(auto_gen_subs_frame)
-        self.vlayout.addWidget(external_downloader_frame)
-        self.vlayout.addWidget(search_limit_frame)
+        self.vlayout.addLayout(log_history)
+        self.vlayout.addLayout(thread_pool_size)
+        self.vlayout.addLayout(history_record_number)
+        self.vlayout.addLayout(download_path)
+        self.vlayout.addLayout(embed_subs)
+        self.vlayout.addLayout(auto_gen_subs)
+        self.vlayout.addLayout(external_downloader)
+        self.vlayout.addLayout(search_limit)
 
 
-        
-        # Put your existing vlayout into a QWidget
-        container.setLayout(self.vlayout)
+#        self.vlayout.addWidget(card)
+        container = QWidget()
+        container_layout = QVBoxLayout(container)
+        container_layout.addWidget(card)
+        container_layout.addStretch()
 
-        # Set the QWidget as the scroll area content
+        main_layout = QVBoxLayout()
+
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
         scroll.setWidget(container)
 
-        # Main layout for dialog
-        main_layout = QVBoxLayout()
         main_layout.addWidget(scroll)
-
-        # Add buttons bar (Save + Reset) at the bottom
-        button_bar = QHBoxLayout()
-        button_bar.addStretch()
-        button_bar.addWidget(self.rst)
-        button_bar.addWidget(self.save)
-        main_layout.addLayout(button_bar)
-
         self.setLayout(main_layout)
-
 
     def create_widget(self):
         self.rst = QPushButton("Reset To Default")
@@ -1035,7 +989,7 @@ class HomePage(QWidget):
         self.result_list.itemClicked.connect(self.open_download_dialog)
         self.signals.format_selected.connect(self.format_selected)
         self.switch_to_downloads_button.clicked.connect(self.show_downloads)
-#        self.settings_button.clicked.connect(self.open_settings_dialog)
+        self.settings_button.clicked.connect(self.open_settings_dialog)
         self.download_button.clicked.connect(self.download_all)
 
     def stylesheets(self):
@@ -1218,15 +1172,6 @@ class HomePage(QWidget):
     def submit_button_clicked(self):      
         if self.input_box.text():  
             self.result_list.clear()
-
-            self.pill = SpinningPill("pill2.png", self.w)  # replace with your pill image
-            self.pill.resize(600, 600)
-            self.w.resize(600, 600)
-            self.w.show()
-            self.w.setStyleSheet("background: red;")
-
-            print(self.pill.isVisible(), self.pill.geometry())
-
 
             self.result_list.hide()
             self.download_button.hide()
@@ -1433,7 +1378,6 @@ class MainWindow(QMainWindow):
         self.scroll = QScrollArea()
 
         self.stacked_widgets = QStackedWidget()
-#        self.setCentralWidget(self.stacked_widgets)
 
         self.home_page = HomePage(self.scroll, self.signals) 
         self.download_page = DownloadPage(self.signals) 
