@@ -323,10 +323,10 @@ class DownloadDialog(QDialog):
 
         for format in self.video_formats:
             self.video_dropbox.addItem(f"{format.get("height")}p---{format.get("ext")}",format.get("format_id"))
-            print("video",format.get("format_id"))
+#            print("video",format.get("format_id"))
         for format in self.audio_formats:
             self.audio_dropbox.addItem(f"{format.get("abr")}kbps---{format.get("ext")}",format.get("format_id"))
-            print("audio",format.get("format_id"))
+#            print("audio",format.get("format_id"))
         
         self.video_dropbox.addItem("Best Video---any","bv*")
         self.video_dropbox.addItem("Best Video---MP4","bv*[ext=mp4]")
@@ -350,8 +350,9 @@ class DownloadDialog(QDialog):
     
     def logging(self):
         if os.path.exists("settings.json"):
-            with open("settings.json", "r") as settings:
-                settings_dict = json.load(settings).get("MainWindow")
+            with open("settings.json", "r") as s:
+                settings = json.load(s)
+                settings_dict = settings.get("MainWindow")
                 self.log_history_enabled = settings_dict.get("LogHistory", False)
                 if not self.log_history_enabled:
                     return
@@ -359,10 +360,11 @@ class DownloadDialog(QDialog):
         Title = self.video_info.get("Title")
         Thumbnail_URL = self.video_info.get("Thumbnail URL") 
         Uploader = self.video_info.get("Uploader")
+        Path = str(settings["Downloader"].get("download_path"))
 
-        writing = ["url","title", "Thumbnail URL","publisher","path","status"]
+        writing = ["url","title", "Thumbnail URL","Uploader","path","status"]
         writing[5] = "Started---INCOMPLETE"
-        writing[0:4] = [self.webpage_url, Title, Thumbnail_URL, Uploader,]
+        writing[0:5] = [self.webpage_url, Title, Thumbnail_URL, Uploader, Path,]
         if os.path.exists("history.json"):
             with open("history.json", "r") as r:
                 record = json.load(r)
@@ -1309,7 +1311,6 @@ class HomePage(QWidget):
                 worker = Load_Thumbnail(result.get("Thumbnail URL"), result.get("Duration_str"), result.get("index"), self.signals, thumbnail_container)
                 self.thread_pool.start(worker)
         self.w.hide()
-        self.pill.stop()
         self.result_list.show()
         self.download_button.show()
     def add_thumbnail(self, thumbnail_pixmap, duration_text, index, thumbnail_container):
