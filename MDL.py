@@ -171,7 +171,7 @@ class FetchMetadata(QObject):
         if info and not isinstance(info, str):
             if isinstance(info, list):  # multiple results (playlist or search)
                 fetched_info = []
-                for i, video in enumerate(info, start=0):
+                for i, video in enumerate(info, start=1):
                     try:
                         fetched_info.append({
                             "index" : i,
@@ -184,10 +184,13 @@ class FetchMetadata(QObject):
                             "Webpage URL" : video.get("url"),
                             "format": video.get("format", []),
                         })
-                    except: pass
+                    except:
+                        fetched_info = {}
             else:  # single video
                 try:
-                    fetched_info = {
+                    fetched_info = []
+                    fetched_info.append({
+                        "index" : 1,
                         "ID" : info.get("id"),
                         "Title" : info.get("title"),
                         "Uploader" : info.get("uploader"),
@@ -195,9 +198,10 @@ class FetchMetadata(QObject):
                         "Duration_str" : info.get("duration_str"),
                         "Thumbnail URL" : info.get("thumbnail"),
                         "Webpage URL" : info.get("url"),
-                        "format": video.get("format", []),
-                        }
-                except: pass
+                        "format": info.get("format", []),
+                        })
+                except: 
+                    fetched_info = {}
             self.signals.send_results.emit(fetched_info)
         else:
             if info:
@@ -394,13 +398,9 @@ class SettingsDialog(QDialog):
         self.starter()
         self.stylesheets()
     
-    def layout(self):
-        
-        card = QFrame()
-        card.setFrameShape(QFrame.StyledPanel)  # Base shape
-        card.setFrameShadow(QFrame.Raised)      # Optional: shadowed edge
-        
-        self.vlayout = QVBoxLayout(card)
+    def layout(self): 
+        container = QWidget()
+        self.vlayout = QVBoxLayout(container)
         self.vlayout.setSpacing(10)
         self.vlayout.setContentsMargins(15, 15, 15, 15)
 
@@ -470,10 +470,7 @@ class SettingsDialog(QDialog):
 
 
 #        self.vlayout.addWidget(card)
-        container = QWidget()
-        container_layout = QVBoxLayout(container)
-        container_layout.addWidget(card)
-        container_layout.addStretch()
+        self.vlayout.addStretch()
 
         main_layout = QVBoxLayout()
 
@@ -482,8 +479,19 @@ class SettingsDialog(QDialog):
         scroll.setWidget(container)
 
         main_layout.addWidget(scroll)
+        pwr_btn_layout = QHBoxLayout(main_layout)
+        pwr_btn_layout.addStretch()
+        pwr_btn_layout.addWidget(self.rst)
+        pwr_btn_layout.addWidget(self.save)
         self.setLayout(main_layout)
-
+       
+    def divider(self, height=1, color="#ccc"):
+        """Creates a flat divider."""
+        line = QWidget()
+        line.setFixedHeight(height)
+        line.setStyleSheet(f"background-color: {color};")
+        return line
+    
     def create_widget(self):
         self.rst = QPushButton("Reset To Default")
         self.save = QPushButton("Save Changes")
@@ -1262,7 +1270,7 @@ class HomePage(QWidget):
                 hbox.setSpacing(15)
 
                 # Index
-                index_label = QLabel(str(result.get("index") + 1))
+                index_label = QLabel(str(result.get("index")))
                 index_label.setStyleSheet("color: white; font-weight: bold; border: none;")
                 index_label.setFixedSize(50, 50)
                 hbox.addWidget(index_label)
