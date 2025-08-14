@@ -1,15 +1,15 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/"             # Location of requirements.txt or pyproject.toml
+    directory: "/"        # Location of requirements.txt
     schedule:
-      interval: "daily"       # Scan once a week
+      interval: "weekly"  # Scan every week
+    allow:
+      - dependency-name: "yt-dlp"
+      - dependency-name: "requests"
+      - dependency-name: "PyQt5"
+      - dependency-name: "qtawesome"
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "security"
+      prefix: "deps"
       include: "scope"
-    allow:
-      - dependency-type: "direct"   # Only your direct dependencies
-    ignore:
-      - dependency-type: "indirect" # Skip libraries installed as sub-dependencies
-    security-updates-only: true
