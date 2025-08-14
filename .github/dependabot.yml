@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"             # Location of requirements.txt or pyproject.toml
+    schedule:
+      interval: "daily"       # Scan once a week
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "security"
+      include: "scope"
+    allow:
+      - dependency-type: "direct"   # Only your direct dependencies
+    ignore:
+      - dependency-type: "indirect" # Skip libraries installed as sub-dependencies
+    security-updates-only: true
