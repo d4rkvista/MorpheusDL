@@ -1,1 +1,4 @@
-"hsl(220, 30%, 7%)"
+future plans:
+1. add true dark background color"hsl(220, 30%, 7%)"
+2. graphical settings menu under development
+3. will incorporate youtube's official content searching modules
