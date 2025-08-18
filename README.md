@@ -154,7 +154,7 @@ aria2c -v
 
 - A: Make sure dependancies are upto-date and report local log to the devs.
 ---
-# 🙏 Acknowledgements
+# Acknowledgements
 
 - yt-dlp for the backend
 
