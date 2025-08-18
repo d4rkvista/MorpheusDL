@@ -999,7 +999,7 @@ class HomePage(QWidget):
         self.result_list.itemClicked.connect(self.open_download_dialog)
         self.signals.format_selected.connect(self.format_selected)
         self.switch_to_downloads_button.clicked.connect(self.show_downloads)
-        self.settings_button.clicked.connect(self.open_settings_dialog)
+#        self.settings_button.clicked.connect(self.open_settings_dialog)
         self.download_button.clicked.connect(self.download_all)
 
     def stylesheets(self):
