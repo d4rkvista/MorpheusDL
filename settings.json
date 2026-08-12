@@ -5,7 +5,7 @@
         "NumberOfHistoryRecords": 10
     },
     "Downloader": {
-        "download_path": "C:\\Users\\window 10\\Downloads\\MorpheusDL",
+        "download_path": "C:\\Users\\Shaleem\\Downloads\\MorpheusDL",
         "EmbedSubtitles": false,
         "WriteAutoSub": false,
         "UseExternalDownloader": true,

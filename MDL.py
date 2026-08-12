@@ -20,6 +20,36 @@ from Downloader import Download, RealDownload
 from io import BytesIO
 
 
+def initialize_settings():
+    if not os.path.exists("settings.json"):
+        default_settings = {
+
+                "MainWindow": {
+                "ThreadPoolSize": None,
+                "LogHistory": True,
+                "NumberOfHistoryRecords": 10
+                },
+                "Downloader": {
+                    "download_path": str(Path.home() / "Downloads" / "MorpheusDL"),
+                    "EmbedSubtitles": False,
+                    "WriteAutoSub": False,
+                    "UseExternalDownloader": True,
+                    "ExternalDownloader": "aria2c",
+                    "ExternalDownloaderArgs": ["-x", "16", "-k", "1M"]
+                },
+                "Fetching": {
+                    "SearchLimit": 5
+                },
+                "Themes": {
+                    "Default": "background-color:",
+                    "Dark": "background-color:"
+                }
+            }
+        with open("settings.json", "w") as settings:
+            json.dump(default_settings, settings, indent=4)
+
+
+
 class GlitchTitle(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1375,6 +1405,7 @@ class HomePage(QWidget):
         self.scroll_animation = animation
 
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -1423,6 +1454,7 @@ class MainWindow(QMainWindow):
         self.scroll.verticalScrollBar().setValue(self.scroll.verticalScrollBar().maximum())
 
 def main():
+    initialize_settings()
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

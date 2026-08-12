@@ -152,7 +152,9 @@ class RealDownload(QObject, yt_dlp.YoutubeDL):
         
         
     def read_settings(self):
-        if os.path.exists("settings.json"):
+        if not os.path.exists("settings.json"):
+            print("Kindly restart the application to create default settings.")
+        else: 
             with open("settings.json", "r") as settings:
                 settings_dict = json.load(settings).get("Downloader")
         
@@ -168,7 +170,6 @@ class RealDownload(QObject, yt_dlp.YoutubeDL):
             self.external_downloader = settings_dict.get("ExternalDownloader", "aria2c")
             self.external_downloader_args = settings_dict.get("ExternalDownloaderArgs", ["-x", "16", "-k", "1M"])
 
-    
 
 #    def load_cookie_file(self):
 #        if os.path.exists("cookies.json"):
