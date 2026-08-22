@@ -1,0 +1,102 @@
+name: 🐛 Bug Report
+description: Report something broken in MorpheusDL
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the details below so it can be reproduced and fixed quickly.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what went wrong.
+      placeholder: When I try to download X, the app crashes / hangs / produces the wrong output...
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce the issue?
+      placeholder: |
+        1. Open MorpheusDL
+        2. Paste this URL: ...
+        3. Select format/quality: ...
+        4. Click Download
+        5. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / error output
+      description: Paste any console output, stack traces, or error messages. This will be automatically formatted as code.
+      render: shell
+    validations:
+      required: false
+
+  - type: input
+    id: app-version
+    attributes:
+      label: MorpheusDL version / commit
+      placeholder: e.g. v0.3.1 or commit hash
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: e.g. 3.11.4
+    validations:
+      required: true
+
+  - type: textarea
+    id: deps
+    attributes:
+      label: Dependency versions (if known)
+      description: yt-dlp, PyQt5, ffmpeg, aria2c, Deno versions — run `pip show yt-dlp PyQt5` and `ffmpeg -version` if unsure.
+      placeholder: |
+        yt-dlp: 2024.08.06
+        PyQt5: 5.15.10
+        ffmpeg: 6.1 (Gyan.FFmpeg build)
+        aria2c: 1.37.0
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues to make sure this hasn't already been reported
+          required: true
+        - label: I have included the full error/log output, if any
+          required: false
+        - label: This is a functionality bug, not a security vulnerability (security issues should go through the private [Security Advisory](../security/advisories/new) form instead)
+          required: true

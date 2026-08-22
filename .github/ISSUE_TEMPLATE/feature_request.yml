@@ -1,0 +1,66 @@
+name: ✨ Feature Request
+description: Suggest an idea or improvement for MorpheusDL
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement! Please describe your idea below.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Is your feature request related to a limitation or frustration you've run into?
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution you'd like
+      description: A clear description of what you want to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any alternative solutions or workarounds you've tried or thought about.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area of the app
+      description: Which part of MorpheusDL does this affect?
+      options:
+        - Download engine (yt-dlp integration)
+        - Audio/video merging (ffmpeg)
+        - GUI (PyQt5)
+        - Settings / configuration
+        - Thumbnails / metadata
+        - Packaging / installation
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, screenshots, or links to similar features in other tools.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues to make sure this hasn't already been requested
+          required: true
